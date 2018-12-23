@@ -1,0 +1,12 @@
+
+{
+    "name": "default",
+    "type": "mssql",
+    "host": "DMAA-PG00BLLV\\SQLEXPRESS",
+    "username": "sa",
+    "password": "sa",
+    "database": "ProjectManagmentDb",
+    "synchronize": true,
+    "logging": false,
+    "entities":["${parentDir}/**/*.entity.ts"]
+ }
