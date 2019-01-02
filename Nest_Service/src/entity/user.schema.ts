@@ -26,4 +26,11 @@ export const UserEntity=new EntitySchema<UserModel>({
             type: Number
         }
     },
+    // relations:{
+    //     pro:
+    //     {
+    //         type:"one-to-many",
+    //         target:"User",
+    //     },
+    // }
  });

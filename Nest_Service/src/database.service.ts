@@ -3,6 +3,8 @@ import { createConnection, getConnectionOptions, Connection } from "typeorm";
 import { UserModel } from "./entity/user.model";
 import { Subject } from "rxjs";
 import { UserEntity } from "./entity/user.schema";
+import { ProjectEntity } from "./entity/project.schema";
+import { TaskEntity } from "./entity/task.schema";
 //import { UserModel } from "dist/src/entity/user.model";
 
 @Injectable()
@@ -28,12 +30,12 @@ export class DatabaseService {
     constructor(){
         createConnection({
                 type: "mssql",
-                host: "DMAA-PG00BLLV\\SQLEXPRESS",
-                username: "sa",
-                password: "sa",
+                host: "DOTNET",
+                username: "PMUser",
+                password: "Sherpa$1",
                 database: "ProjectManagmentDb",
                 
-                entities: [UserEntity
+                entities: [UserEntity,ProjectEntity,TaskEntity
                    
                 ],
                 // migrations: [
