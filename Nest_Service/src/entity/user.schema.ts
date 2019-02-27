@@ -11,7 +11,8 @@ export const UserEntity=new EntitySchema<UserModel>({
             name:"UserId",
             type: Number,
             primary: true,
-            generated: true
+            generated: true,
+            readonly:true,
         },
         FirstName: {
             name:"FName",
@@ -26,11 +27,26 @@ export const UserEntity=new EntitySchema<UserModel>({
             type: Number
         }
     },
-    // relations:{
-    //     pro:
-    //     {
-    //         type:"one-to-many",
-    //         target:"User",
-    //     },
-    // }
+
+    relations:{
+         Projects :
+        {
+            type:"one-to-many",
+            target:"Project",
+            inverseSide:"ProjectManager"
+            //joinColumn:{name:"UserId",referencedColumnName:"ProjectManagerId"},
+
+            
+        },
+
+        // Tasks :
+        // {
+        //     type:"many-to-one",
+        //     target:"Task",
+        //     joinColumn:{name:"UserId",referencedColumnName:"UserId"},
+        //     //cascade:  ["remove","insert"],
+            
+        // },
+    }
+
  });

@@ -31,7 +31,7 @@ export class ProjectService {
 
     }
     GetProjects(): Promise<ProjectModel[]> {
-        return this.repo.find().then(x=>{
+        return this.repo.find({relations:["ProjectManager","Tasks"]}).then(x=>{
             return x;
         });
         //return ServiceMockData.Users;

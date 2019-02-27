@@ -1,5 +1,7 @@
 
 import {Entity,Column,PrimaryGeneratedColumn, EntitySchema} from 'typeorm'
+import { ProjectModel } from './project.model';
+import { TaskModel } from './task.model';
 
 
 
@@ -31,6 +33,10 @@ import {Entity,Column,PrimaryGeneratedColumn, EntitySchema} from 'typeorm'
     LastName:string;
 
     EmployeeId:number;
+
+    Projects: ProjectModel[];
+
+    Tasks:TaskModel[];
  }
 
  

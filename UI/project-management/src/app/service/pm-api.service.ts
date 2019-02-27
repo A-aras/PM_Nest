@@ -54,7 +54,7 @@ export class PmApiService extends IPmApiService {
         return this.httpService.post(environment.ApiService+"/Task/AddTask", task);
     }
     UpdateTask(task: TaskModel): Observable<any> {
-        return this.httpService.post(environment.ApiService+"/Task/UpdateTask", task);
+        return this.httpService.put(environment.ApiService+"/Task/UpdateTask/" + task.TaskId, task);
     }
     DeleteTask(task: TaskModel): Observable<any> {
         return this.httpService.delete(environment.ApiService+"/Task/DeleteTask/"+task.TaskId);
@@ -65,13 +65,13 @@ export class PmApiService extends IPmApiService {
       }
 
     getUsers(): Observable<UserModel[]> {
-        return this.httpService.get<UserModel[]>( environment.ApiService+"/User/GetUsers");
+        return this.httpService.get<UserModel[]>(environment.ApiService+ "/User");
     }
     AddUser(user: UserModel) {
         return this.httpService.post(environment.ApiService+"/User/AddUser", user);
     }
     UpdateUser(user: UserModel): Observable<any> {
-        return this.httpService.post(environment.ApiService+"/User/UpdateUser", user);
+        return this.httpService.put(environment.ApiService+"/User/UpdateUser/" + user.UserId, user);
     }
     DeleteUser(user: UserModel): Observable<any> {
         return this.httpService.delete(environment.ApiService+"/User/DeleteUser/"+user.UserId);
@@ -85,7 +85,7 @@ export class PmApiService extends IPmApiService {
         return this.httpService.post(environment.ApiService+"/Project/AddProject", project);
     }
     UpdateProject(project: ProjectModel): Observable<any> {
-        return this.httpService.post(environment.ApiService+"/Project/UpdateProject", project);
+        return this.httpService.put(environment.ApiService+"/Project/UpdateProject/" + project.ProjectId, project);
     }
 
   }

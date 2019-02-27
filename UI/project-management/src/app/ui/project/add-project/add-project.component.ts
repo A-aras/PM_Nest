@@ -42,7 +42,8 @@ import * as Const from "src/app/const/const";
 import { DatepickerModule } from "ngx-bootstrap/datepicker/datepicker.module";
 import { createDate } from "ngx-bootstrap/chronos/create/date-from-array";
 import { getTomorrowDate, getCurrentDate } from "src/app/utils/date-util";
-
+import { selectAllUserSelector } from "src/app/repository/user/user.reducer";
+import {Store, select} from '@ngrx/store';
 
 @Component({
   selector: "app-add-project",
@@ -119,7 +120,8 @@ export class AddProjectComponent implements OnInit {
     private router: Router,
     private activeRoute: ActivatedRoute,
     private modalService: BsModalService,
-    private serviceBus: PmServiceBus
+    private serviceBus: PmServiceBus,
+    private store:Store<any>
   ) {
     setTheme("bs4");
     this.initFormsControl();
@@ -127,6 +129,11 @@ export class AddProjectComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    this.store.pipe(select(selectAllUserSelector)).subscribe(x=>{
+console.log(x);
+    });
+    
 
     this.serviceBus.ProjectEditObservable.subscribe(x => {
       this.btnAction = "Save";

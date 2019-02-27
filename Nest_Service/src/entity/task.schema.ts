@@ -1,4 +1,3 @@
-
 import {Entity,Column,PrimaryGeneratedColumn, EntitySchema} from 'typeorm'
 import { UserModel } from './user.model';
 import { ProjectModel } from './project.model';
@@ -62,6 +61,7 @@ export const TaskEntity=new EntitySchema<TaskModel>({
             type:"many-to-one",
             target:"User",
             joinColumn:{name:"UserId",referencedColumnName:"UserId"},
+            //cascade:  ["remove","insert"]
             //eager:true
         },
         ParentTask:
@@ -69,12 +69,15 @@ export const TaskEntity=new EntitySchema<TaskModel>({
             type:"many-to-one",
             target:"Task",
             joinColumn:{name:"ParentTaskId",referencedColumnName:"TaskId"},
+            //cascade:  ["remove","insert"]
+        },
+
+        Project:{
+            type:"one-to-one",
+            target:"Project",
+            joinColumn:{name:"ProjectId",referencedColumnName:"ProjectId"},
+            inverseSide:"Tasks"
+            //cascade:  ["remove","insert"],
         }
-        // Project:{
-        //     type:"many-to-one",
-        //     target:"Project",
-        //     joinColumn:{name:"ProjectId",referencedColumnName:"ProjectId"},
-        //     eager:true
-        // }
     }
  });

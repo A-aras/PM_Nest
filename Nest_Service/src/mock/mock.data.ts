@@ -10,6 +10,8 @@ export class ServiceMockData {
         FirstName: "FName1",
         LastName: "LName1",
         EmployeeId: 1,
+        Tasks:null,
+        Projects:null
     };
 
     public static User2: UserModel = {
@@ -17,6 +19,8 @@ export class ServiceMockData {
         FirstName: "FName2",
         LastName: "LName2",
         EmployeeId: 2,
+        Tasks:null,
+        Projects:null
     };
 
     public static Users: UserModel[] = [

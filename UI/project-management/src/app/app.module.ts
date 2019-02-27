@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 
 import { FormsModule,ReactiveFormsModule } from '@angular/forms';
@@ -24,9 +24,21 @@ import { ViewTaskComponent } from './ui/task/view-task/view-task.component';
 import { AddTaskComponent } from './ui/task/add-task/add-task.component';
 import { SearchModuleComponent } from './ui/search/search-module/search-module.component';
 import { InjectableRxStompConfig, RxStompService, rxStompServiceFactory } from '@stomp/ng2-stompjs';
-import { stompConfig } from 'src/app/message/message.service.config';
-import { MessageService } from 'src/app/message/message.service';
+import { myRxStompConfig } from './service/pm-notification.service';
+import { StoreModule,Store } from '@ngrx/store';
+import { UserReducer, UserRepositoryLoadEffect, UserState, reducers } from './repository/user/user.reducer';
+import { OnLoadRepository } from './repository/user/user.action';
+import { EffectsModule } from '@ngrx/effects';
+import {  StoreDevtoolsModule } from '@ngrx/store-devtools';
+//import { Store } from '@angular/core/src/render3/instructions';
 
+
+
+ 
+// export function PreLoadRepository(store:Store<UserState>) {
+//   console.warn(store);
+//   return () => store.dispatch(new OnLoadRepository(null));
+// }
 
 @NgModule({
   declarations: [
@@ -53,20 +65,20 @@ import { MessageService } from 'src/app/message/message.service';
     AppRoutingModule,
     BsDatepickerModule.forRoot(),
     DatepickerModule.forRoot(),
-    ModalModule.forRoot()
+    ModalModule.forRoot(),
+    StoreModule.forRoot(reducers),
+    EffectsModule.forRoot([UserRepositoryLoadEffect]),
+    StoreDevtoolsModule.instrument(),
   ],
-  providers: [
-    {provide: IPmApiService,useClass:PmApiService},
+  providers: [{provide: IPmApiService,useClass:PmApiService},
+    {provide: InjectableRxStompConfig,useValue: myRxStompConfig},
     {
-    provide: InjectableRxStompConfig,
-    useValue: stompConfig
-  },
-  {
-    provide: RxStompService,
-    useFactory: rxStompServiceFactory,
-    deps: [InjectableRxStompConfig]
-  },{provide:MessageService}],
-   
+      provide: RxStompService,
+      useFactory: rxStompServiceFactory,
+      deps: [InjectableRxStompConfig]
+    },
+    //{provide:APP_INITIALIZER,useFactory:PreLoadRepository,deps:[Store],multi:false}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

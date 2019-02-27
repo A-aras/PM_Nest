@@ -1,4 +1,3 @@
-
 import {Entity,Column,PrimaryGeneratedColumn, EntitySchema} from 'typeorm'
 import { UserModel } from './user.model';
 import { ProjectModel } from './project.model';
@@ -48,13 +47,21 @@ export const ProjectEntity=new EntitySchema<ProjectModel>({
             type:"many-to-one",
             target:"User",
             joinColumn:{name:"ProjectManagerId",referencedColumnName:"UserId"},
-            eager:true
+            // eager:true,
+            cascade:true,
+            onDelete:"CASCADE",
+            inverseSide:"Projects"
         },
-        // Tasks:{
-        //     type:"one-to-many",
-        //     target:"Task",
-        //     joinColumn:{name:"ProjectId",referencedColumnName:"ProjectId"},
-        //     eager:true
-        // }
+
+        Tasks:{
+            type:"one-to-many",
+            target:"Task",
+            joinColumn:{name:"ProjectId",referencedColumnName:"ProjectId"},
+             nullable:true,
+             cascade:true,
+             onDelete:"CASCADE",
+             inverseSide:"Project"
+            //cascade:  ["remove","insert"]
+        }
     }
  });

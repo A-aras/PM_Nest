@@ -30,9 +30,9 @@ export class DatabaseService {
     constructor(){
         createConnection({
                 type: "mssql",
-                host: "DOTNET",
-                username: "PMUser",
-                password: "Sherpa$1",
+                host: "DMAA-PG00BLLV\\SQLEXPRESS",
+                username: "sa",
+                password: "sa",
                 database: "ProjectManagmentDb",
                 
                 entities: [UserEntity,ProjectEntity,TaskEntity
@@ -46,6 +46,8 @@ export class DatabaseService {
                 // ],
 
                 synchronize: false,
+                logging:"all",
+                logger:"advanced-console"
                 
         }).then(connection => {
             

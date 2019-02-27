@@ -16,6 +16,7 @@ import { IPmApiService } from "src/app/service/pm-api.service-interface";
 
 import { UserModel } from "src/app/model/user-model";
 import { PmServiceBus } from "src/app/service/service_bus";
+import { PmNotificationService } from "../../../service/pm-notification.service";
 
 @Component({
   selector: "app-view-user",
@@ -35,13 +36,22 @@ export class ViewUserComponent implements OnInit, AfterViewInit {
   searchUserInputValue:string="";
 
   ngAfterViewInit(): void {
+
+  
+
     //throw new Error("Method not implemented.");
   }
 
   constructor(
     private service: IPmApiService,
-    private serviceBus: PmServiceBus
+    private serviceBus: PmServiceBus,
+    private notificationService:PmNotificationService
   ) {
+
+    this.notificationService.WhenEvents().subscribe(x=>{
+      console.log(x);
+    });
+    
     this.initFormsControl();
   }
 
