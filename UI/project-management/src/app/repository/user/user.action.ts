@@ -15,7 +15,7 @@ export enum UserActionTypes {
     Loaded='[User] Load'
   }
 
-export class AddToRepository  implements Action {
+export class AddUserToRepository  implements Action {
     readonly type = UserActionTypes.Add;
 
     constructor(public payload: UserModel) { }
@@ -45,5 +45,5 @@ export class OnLoadRepository  implements Action {
     constructor(public payload: UserModel[]) { }
 }
 
-export type UserActionUnion = AddToRepository | RemoveFromRepository | UpdateRepository | LoadRepository | OnLoadRepository;
+export type UserActionUnion = AddUserToRepository | RemoveFromRepository | UpdateRepository | LoadRepository | OnLoadRepository;
 

@@ -46,17 +46,28 @@ export class UserService {
     }
 
     AddUser(user: UserModel): Promise<UserModel> {
-        return this.repo.save(user);
+       
+        return this.repo.save(user).then(x=>{
+            let msg=this.GetUserMessage('Add',x.UserId);
+            this.publisMessage(msg);
+            return x;
+        });
+    }
+
+    GetUserMessage(action:string,userId:number|null):MessageModel
+    {
+        let msg=new MessageModel();
+        msg.action=action;
+        msg.entityType="User";
+        msg.id=userId;
+        return msg;
     }
 
     UpdateUser(user: UserModel): Promise<UserModel> {
 
        
-        let msg=new MessageModel();
-        msg.action="Update"
-        msg.entityType="User"
-        msg.id=user.UserId;
-
+        let msg=this.GetUserMessage('Update',user.UserId);
+        
         
         //this.messageClient.publishMessage("/exchange/PMTest","Test Message");
         // options:SaveOptions={
@@ -139,6 +150,8 @@ export class UserService {
         //     //return this.service.DeleteUser(id);
         // }
 
+       
+
         return this.repo.findOne({relations:["Projects"],where:{UserId:Equal(id)}}).then(x=>{
             if (x===null|| x===undefined)
             {
@@ -157,7 +170,11 @@ export class UserService {
             }
         }).then(x=>{
             
-            return this.repo.remove(x).catch(y=>{
+            return this.repo.remove(x).then(y=>{
+                let msg=this.GetUserMessage('Delete',y.UserId);
+                this.publisMessage(msg);
+                return y;
+            }).catch(y=>{
                 console.log("Error occurd");
                 return null;
             });

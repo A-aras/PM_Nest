@@ -24,12 +24,13 @@ import { ViewTaskComponent } from './ui/task/view-task/view-task.component';
 import { AddTaskComponent } from './ui/task/add-task/add-task.component';
 import { SearchModuleComponent } from './ui/search/search-module/search-module.component';
 import { InjectableRxStompConfig, RxStompService, rxStompServiceFactory } from '@stomp/ng2-stompjs';
-import { myRxStompConfig } from './service/pm-notification.service';
+import { myRxStompConfig, PmNotificationService } from './service/pm-notification.service';
 import { StoreModule,Store } from '@ngrx/store';
 import { UserReducer, UserRepositoryLoadEffect, UserState, reducers } from './repository/user/user.reducer';
 import { OnLoadRepository } from './repository/user/user.action';
 import { EffectsModule } from '@ngrx/effects';
 import {  StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { IUserRepository, UserRepository } from './repository/user/user.repository';
 //import { Store } from '@angular/core/src/render3/instructions';
 
 
@@ -77,8 +78,12 @@ import {  StoreDevtoolsModule } from '@ngrx/store-devtools';
       useFactory: rxStompServiceFactory,
       deps: [InjectableRxStompConfig]
     },
+    {provide:PmNotificationService,useClass:PmNotificationService},
+    {provide:IUserRepository,useClass:UserRepository},
+    
     //{provide:APP_INITIALIZER,useFactory:PreLoadRepository,deps:[Store],multi:false}
   ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+

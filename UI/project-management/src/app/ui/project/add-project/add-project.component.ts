@@ -42,8 +42,9 @@ import * as Const from "src/app/const/const";
 import { DatepickerModule } from "ngx-bootstrap/datepicker/datepicker.module";
 import { createDate } from "ngx-bootstrap/chronos/create/date-from-array";
 import { getTomorrowDate, getCurrentDate } from "src/app/utils/date-util";
-import { selectAllUserSelector } from "src/app/repository/user/user.reducer";
+import { selectAllUserSelector, getUserById } from "src/app/repository/user/user.reducer";
 import {Store, select} from '@ngrx/store';
+import { IUserRepository } from "src/app/repository/user/user.repository";
 
 @Component({
   selector: "app-add-project",
@@ -113,7 +114,7 @@ export class AddProjectComponent implements OnInit {
 
   model: ProjectModel = this.getDefaultProjectModel();
 
-  
+  users:UserModel[]=[];
 
   constructor(
     private service: IPmApiService,
@@ -121,7 +122,8 @@ export class AddProjectComponent implements OnInit {
     private activeRoute: ActivatedRoute,
     private modalService: BsModalService,
     private serviceBus: PmServiceBus,
-    private store:Store<any>
+    //private store:Store<any>,
+    private userRepo:IUserRepository
   ) {
     setTheme("bs4");
     this.initFormsControl();
@@ -130,15 +132,34 @@ export class AddProjectComponent implements OnInit {
 
   ngOnInit() {
 
-    this.store.pipe(select(selectAllUserSelector)).subscribe(x=>{
-console.log(x);
+    this.userRepo.getAllUsers().subscribe(x=>{
+      this.users=x;
     });
+//     this.store.pipe(
+//       select(selectAllUserSelector)
+      
+//       ).subscribe(x=>{
+//       this.users=x;
+// //console.log(x);
+//     });
     
 
     this.serviceBus.ProjectEditObservable.subscribe(x => {
       this.btnAction = "Save";
       this.model = x;
-      this.selectedManager=x.ProjectManager;
+
+      this.userRepo.getUserById(x.ProjectManagerId).subscribe(y=>{
+        this.selectedManager=y[0]
+      });
+
+      // this.store.pipe(
+      //   select(getUserById,{Id:x.ProjectManagerId})
+        
+      //   ).subscribe(y=>{
+      //     this.selectedManager=y[0];
+      // });
+      
+      //this.selectedManager=x.ProjectManager;
       this.UpdateValuesFromModelToFormsControls();
     });
 
@@ -369,11 +390,15 @@ console.log(x);
     this.columnsDisplay = ['EmployeeId', 'FirstName', 'LastName'];
     this.searchFields = ['FirstName', 'LastName'];
     this.popupModelType = "Project Manager";
-    this.service.getUsers().subscribe(x => {
-      this.serarchInputValues = x;
-      this.searchModalDisplayed = true;
-      this.serviceBus.CommonSearchObservable.next(true);
-    });
+
+    this.serarchInputValues=this.users;
+    this.searchModalDisplayed = true;
+    this.serviceBus.CommonSearchObservable.next(true);
+    // this.service.getUsers().subscribe(x => {
+    //   this.serarchInputValues = x;
+    //   this.searchModalDisplayed = true;
+    //   this.serviceBus.CommonSearchObservable.next(true);
+    // });
   }
 
   HandleRowSelected(selectedValue: [any, boolean, string]) {

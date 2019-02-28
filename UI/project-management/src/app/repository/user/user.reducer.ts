@@ -2,7 +2,7 @@ import { Injectable, Injector } from '@angular/core'
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { UserModel } from './../../model/user-model'
 //import { UserActions, AddToRepository, ADD, LoadRepository, UpdateRepository, RemoveFromRepository, UserActionUnion } from '../user/user.action';
-import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
+import { EntityState, EntityAdapter, createEntityAdapter, Dictionary } from '@ngrx/entity';
 
 //import { stat } from 'fs';
 import * as UserActions from '../user/user.action';
@@ -11,14 +11,18 @@ import { EMPTY } from 'rxjs';
 import { map, mergeMap, catchError } from 'rxjs/operators';
 import { PmApiService } from 'src/app/service/pm-api.service';
 import { IPmApiService } from 'src/app/service/pm-api.service-interface';
-import { ActionReducerMap ,createSelector,
-    createFeatureSelector} from '@ngrx/store';
+import {
+    ActionReducerMap, createSelector,
+    createFeatureSelector
+} from '@ngrx/store';
+import { forEach } from '@angular/router/src/utils/collection';
 
 
 
 export interface UserState extends EntityState<UserModel> {
-    EntityCollection: UserModel[];
+    //EntityCollection: UserModel[];
     loaded: boolean;
+    // Ids:number[];
 
 }
 
@@ -31,17 +35,17 @@ export function sortByName(a: UserModel, b: UserModel): number {
     return a.FirstName.localeCompare(b.FirstName);
 }
 
-export const userAdapter: EntityAdapter<UserModel> = createEntityAdapter<UserModel>({
+export const userEntityAdapter: EntityAdapter<UserModel> = createEntityAdapter<UserModel>({
     selectId: x => x.UserId,
     sortComparer: sortByName,
 
 });
 
-export const initialState: UserState = userAdapter.getInitialState({
+export const initialState: UserState = userEntityAdapter.getInitialState({
     // additional entity state properties
     EntityCollection: [],
     loaded: false,
-
+    Ids: []
 });
 
 export function UserReducer(state: UserState = initialState, action: UserActions.UserActionUnion): UserState {
@@ -49,20 +53,20 @@ export function UserReducer(state: UserState = initialState, action: UserActions
     switch (action.type) {
         case UserActions.UserActionTypes.Loaded:
             return {
-                ...userAdapter.addMany(action.payload, state),
+                ...userEntityAdapter.addMany(action.payload, state),
                 loaded: true
             };
         case UserActions.UserActionTypes.Add:
             return {
-                ...userAdapter.addOne(action.payload, state)
+                ...userEntityAdapter.addOne(action.payload, state)
             };
         case UserActions.UserActionTypes.Update:
             return {
-                ...userAdapter.updateOne({ id: action.payload.UserId, changes: action.payload }, state)
+                ...userEntityAdapter.updateOne({ id: action.payload.UserId, changes: action.payload }, state)
             };
         case UserActions.UserActionTypes.Remove:
             return {
-                ...userAdapter.removeOne(action.payload.UserId, state)
+                ...userEntityAdapter.removeOne(action.payload.UserId, state)
             };
         default:
             return state;
@@ -99,9 +103,9 @@ export class UserRepositoryLoadEffect {
 
 export interface StateData {
     Data: UserState;
-} 
+}
 
-export const reducers: ActionReducerMap<StateData> = {
+export const reducers: ActionReducerMap<StateData> = {
     Data: UserReducer
 }
 
@@ -109,12 +113,12 @@ export const reducers: ActionReducerMap<StateData> = {
 const {
     selectIds,
     selectEntities,
-    selectAll,
+    selectAll: selectAllUsers,
     selectTotal,
-  } = userAdapter.getSelectors();
+} = userEntityAdapter.getSelectors();
 
-  // select the array of users
-export const selectAllUsers = selectAll;
+// select the array of users
+
 
 // export const selectAllUsers = createSelector(
 //     selectUserState,
@@ -122,8 +126,30 @@ export const selectAllUsers = selectAll;
 //   );
 
 export const selectUserState = createFeatureSelector<UserState>('Data');
- 
+
 export const selectAllUserSelector = createSelector(
     selectUserState,
     selectAllUsers
-  );
+);
+
+
+export const getUserById = createSelector(
+    selectUserState,
+    (selectAllUsers: UserState, props) => {
+        
+       let users = (selectAllUsers.ids as any[])
+       .filter((a, b, c) => {
+             return a === props.Id
+        })
+        .map((a, b, c) => {
+            return selectAllUsers.entities[a];
+        });
+
+        return users;
+    }
+);
+
+//   export const getUserById = createSelector(selectUserState,
+//     (id:number)=>{
+//         return selectAllUsers(selectUserState).filter(x=>x.UserId===id);
+//   })
