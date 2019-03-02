@@ -40,15 +40,21 @@ export class AddUserComponent implements OnInit {
   empId: FormControl;
   btnAction = "Add";
 
-  model: UserModel = {
-    EmployeeId: null,
-    FirstName: "",
-    LastName: "",
-    //ProjectId: 0,
-    //Task: null,
-    //TaskId: 0,
-    UserId: 0,
-  };
+  model = new UserModel()
+        .WithValue(x=>x.EmployeeId=-1)
+    .WithValue(x=>x.FirstName="")
+    .WithValue(x=>x.LastName="")
+    .WithValue(x=>x.UserId=0);
+
+  // model: UserModel = {
+  //   EmployeeId: null,
+  //   FirstName: "",
+  //   LastName: "",
+  //   //ProjectId: 0,
+  //   //Task: null,
+  //   //TaskId: 0,
+  //   UserId: 0,
+  // };
 
   @ViewChild("alertModal")
   alertModal: ModalDirective;

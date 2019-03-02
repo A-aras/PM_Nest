@@ -16,6 +16,7 @@ import {
 export abstract class IPmApiService {
 
   abstract getUsers(): Observable < UserModel[] > ;
+  abstract getUsersById(id:number): Observable < UserModel[] > ;
   abstract AddUser(user: UserModel);
   abstract UpdateUser(user: UserModel): Observable < any > ;
   abstract DeleteUser(user: UserModel): Observable < any > ;

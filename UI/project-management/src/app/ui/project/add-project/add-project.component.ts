@@ -43,7 +43,7 @@ import { DatepickerModule } from "ngx-bootstrap/datepicker/datepicker.module";
 import { createDate } from "ngx-bootstrap/chronos/create/date-from-array";
 import { getTomorrowDate, getCurrentDate } from "src/app/utils/date-util";
 import { selectAllUserSelector, getUserById } from "src/app/repository/user/user.reducer";
-import {Store, select} from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { IUserRepository } from "src/app/repository/user/user.repository";
 
 @Component({
@@ -68,21 +68,21 @@ export class AddProjectComponent implements OnInit {
   searchModalDisplayed: boolean = false;
   rowSelected: boolean = false;
 
-  getDefaultUserModel():UserModel{
-    let defaultUser:UserModel   = {
-      EmployeeId: -1,
-      FirstName: "",
-      LastName: "",
-      UserId: -1
-    };
+  getDefaultUserModel(): UserModel {
+    let defaultUser = new UserModel()
+      .WithValue(x => x.EmployeeId = -1)
+      .WithValue(x => x.FirstName = "")
+      .WithValue(x => x.LastName = "")
+      .WithValue(x => x.UserId = 0);
+
     return defaultUser;
   }
 
-  selectedManager:UserModel=this.getDefaultUserModel();
+  selectedManager: UserModel = this.getDefaultUserModel();
 
-  getDefaultProjectModel():ProjectModel{
-    this.selectedManager=this.getDefaultUserModel();
-    let defaultProject:ProjectModel   = {
+  getDefaultProjectModel(): ProjectModel {
+    this.selectedManager = this.getDefaultUserModel();
+    let defaultProject: ProjectModel = {
       EndDate: getTomorrowDate(),
       Priority: 0,
       Project: null,
@@ -91,18 +91,18 @@ export class AddProjectComponent implements OnInit {
       ProjectManagerId: -1,
       StartDate: getCurrentDate(),
       Tasks: null,
-      NoOfClosedTasks:0,
-      IsActive:true
+      NoOfClosedTasks: 0,
+      IsActive: true
     };
     return defaultProject;
   }
 
-  
 
-  serarchInputValues: any[] ;//= [this.defaultProject];
+
+  serarchInputValues: any[];//= [this.defaultProject];
   columnsDisplay: string[] = ['FirstName', 'LastName', 'EmployeeId'];
-  searchFields: string[] = ['FirstName','LastName'];
-  popupModelType: string="Project Manager";
+  searchFields: string[] = ['FirstName', 'LastName'];
+  popupModelType: string = "Project Manager";
 
   @ViewChild("searchModal")
   searchModal: ModalDirective;
@@ -114,7 +114,7 @@ export class AddProjectComponent implements OnInit {
 
   model: ProjectModel = this.getDefaultProjectModel();
 
-  users:UserModel[]=[];
+  users: UserModel[] = [];
 
   constructor(
     private service: IPmApiService,
@@ -123,7 +123,7 @@ export class AddProjectComponent implements OnInit {
     private modalService: BsModalService,
     private serviceBus: PmServiceBus,
     //private store:Store<any>,
-    private userRepo:IUserRepository
+    private userRepo: IUserRepository
   ) {
     setTheme("bs4");
     this.initFormsControl();
@@ -132,77 +132,75 @@ export class AddProjectComponent implements OnInit {
 
   ngOnInit() {
 
-    this.userRepo.getAllUsers().subscribe(x=>{
-      this.users=x;
+    this.userRepo.getAllUsers().subscribe(x => {
+      this.users = x;
     });
-//     this.store.pipe(
-//       select(selectAllUserSelector)
-      
-//       ).subscribe(x=>{
-//       this.users=x;
-// //console.log(x);
-//     });
-    
+    //     this.store.pipe(
+    //       select(selectAllUserSelector)
+
+    //       ).subscribe(x=>{
+    //       this.users=x;
+    // //console.log(x);
+    //     });
+
 
     this.serviceBus.ProjectEditObservable.subscribe(x => {
       this.btnAction = "Save";
       this.model = x;
 
-      this.userRepo.getUserById(x.ProjectManagerId).subscribe(y=>{
-        this.selectedManager=y[0]
+      this.userRepo.getUserById(x.ProjectManagerId).subscribe(y => {
+        this.selectedManager = y[0]
       });
 
       // this.store.pipe(
       //   select(getUserById,{Id:x.ProjectManagerId})
-        
+
       //   ).subscribe(y=>{
       //     this.selectedManager=y[0];
       // });
-      
+
       //this.selectedManager=x.ProjectManager;
       this.UpdateValuesFromModelToFormsControls();
     });
 
     this.DialogResult
-    .pipe(
-      filter(x =>{
-        return x;
-      }
+      .pipe(
+        filter(x => {
+          return x;
+        }
+        )
       )
-    )
-    .subscribe(x => {
-      this.model.Project = this.projectControl.value;
-      if(this.dateRequiredControl.value==true)
-      {
-        this.model.StartDate = this.startDateControl.value;
-        this.model.EndDate = this.endDateControl.value;
-      }
-      else
-      {
-        this.model.StartDate=null;
-        this.model.EndDate=null;
-      }
+      .subscribe(x => {
+        this.model.Project = this.projectControl.value;
+        if (this.dateRequiredControl.value == true) {
+          this.model.StartDate = this.startDateControl.value;
+          this.model.EndDate = this.endDateControl.value;
+        }
+        else {
+          this.model.StartDate = null;
+          this.model.EndDate = null;
+        }
 
-      this.model.ProjectManager=this.selectedManager;
-      this.model.ProjectManagerId=this.selectedManager===null?null:this.selectedManager.UserId;
-      this.model.Priority = this.projectPriorityControl.value;
-      
+        this.model.ProjectManager = this.selectedManager;
+        this.model.ProjectManagerId = this.selectedManager === null ? null : this.selectedManager.UserId;
+        this.model.Priority = this.projectPriorityControl.value;
 
-      if (this.btnAction === "Add") {
-        this.model.ProjectId=-1;
-        this.service.AddProject(this.model).subscribe(x => {
-          console.log("Project Added...");
-          //this.router.navigate(["/AddUser"]);
-          this.refreshProject();
-        });
-      } else if (this.btnAction === "Save") {
-        this.service.UpdateProject(this.model).subscribe(x => {
-          console.log("Project Updated...");
-          //this.router.navigate(["/AddUser"]);
-          this.refreshProject();
-        });
-      }
-    });
+
+        if (this.btnAction === "Add") {
+          this.model.ProjectId = -1;
+          this.service.AddProject(this.model).subscribe(x => {
+            console.log("Project Added...");
+            //this.router.navigate(["/AddUser"]);
+            this.refreshProject();
+          });
+        } else if (this.btnAction === "Save") {
+          this.service.UpdateProject(this.model).subscribe(x => {
+            console.log("Project Updated...");
+            //this.router.navigate(["/AddUser"]);
+            this.refreshProject();
+          });
+        }
+      });
   }
 
   initFormsControl(): void {
@@ -238,33 +236,32 @@ export class AddProjectComponent implements OnInit {
     //   "endDateControl"
     // );
 
-    
+
     this.dateFormGroup = new FormGroup({
       startDateControl: this.startDateControl,
       endDateControl: this.endDateControl
     });
-    
+
     //this.dateFormGroup.setValidators(dateValidator);
 
     this.dateRequiredControl.valueChanges.subscribe(x => {
-      if(this.dateRequiredControl.value as boolean===true)
-      {
+      if (this.dateRequiredControl.value as boolean === true) {
         this.startDateControl.enable();
         this.startDateControl.setValidators([Validators.required,
-          Validator.IsValidDate]);
+        Validator.IsValidDate]);
 
-          this.endDateControl.enable();
+        this.endDateControl.enable();
         this.endDateControl.setValidators([Validators.required,
-          Validator.IsValidDate]);
+        Validator.IsValidDate]);
 
-          let dataValidation = Validator.DateMustbeGreaterThanValidation(
-            "startDateControl",
-            "endDateControl"
-          );
+        let dataValidation = Validator.DateMustbeGreaterThanValidation(
+          "startDateControl",
+          "endDateControl"
+        );
 
-          this.dateFormGroup.setValidators(dataValidation);
+        this.dateFormGroup.setValidators(dataValidation);
       }
-      else{
+      else {
         this.startDateControl.disable();
         this.startDateControl.clearValidators();
 
@@ -322,7 +319,7 @@ export class AddProjectComponent implements OnInit {
   }
 
   UpdateValuesFromModelToFormsControls() {
-    
+
     this.projectControl.setValue(this.model.Project);
     this.projectPriorityControl.setValue(this.model.Priority);
     this.managerControl.setValue(this.model.ProjectManager.FirstName);
@@ -355,7 +352,7 @@ export class AddProjectComponent implements OnInit {
     // this.model.EndDate= getTomorrowDate();
     // this.model.StartDate= getCurrentDate();
     // this.model.Project="";
-    this.model=this.getDefaultProjectModel();
+    this.model = this.getDefaultProjectModel();
     this.UpdateValuesFromModelToFormsControls();
 
     this.serviceBus.ProjectSearchObservable.next(true);
@@ -391,7 +388,7 @@ export class AddProjectComponent implements OnInit {
     this.searchFields = ['FirstName', 'LastName'];
     this.popupModelType = "Project Manager";
 
-    this.serarchInputValues=this.users;
+    this.serarchInputValues = this.users;
     this.searchModalDisplayed = true;
     this.serviceBus.CommonSearchObservable.next(true);
     // this.service.getUsers().subscribe(x => {
@@ -403,9 +400,9 @@ export class AddProjectComponent implements OnInit {
 
   HandleRowSelected(selectedValue: [any, boolean, string]) {
     if (selectedValue[1]) {
-        this.selectedManager = selectedValue[0];
-        this.managerControl.setValue(this.selectedManager.FirstName);
-        //this.managerControl.markAsTouched();
+      this.selectedManager = selectedValue[0];
+      this.managerControl.setValue(this.selectedManager.FirstName);
+      //this.managerControl.markAsTouched();
     }
     // this.rowSelected = selectedValue[1];
     // this.selectedManager = selectedValue[0];

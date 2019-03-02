@@ -7,5 +7,5 @@ export class NotificationMessagModel {
 
     // TargetClientSessionId: string|null;
 
-    id:any;
+    id:string;
 }

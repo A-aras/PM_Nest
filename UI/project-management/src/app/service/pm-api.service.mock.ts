@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/internal/Observable';
 import { TaskModel  } from 'src/app/model/task-model';
 import { of } from 'rxjs';
-import { UserModel } from 'src/app/model/user-model';
+import { UserModel } from './../model/user-model';
 import { HttpHeaders } from '@angular/common/http';
 import { URLSearchParams } from 'url';
 import { HttpParams } from '@angular/common/http';
@@ -15,27 +15,47 @@ import { IPmApiService } from 'src/app/Service/pm-api.service-interface';
 
 export class PMApiServiceMockData {
 
-    public static User1: UserModel={
-        UserId : 1,
-        FirstName : "FName1",
-        LastName : "LName1",
-        EmployeeId : 1,
-        //Task:null
-    };
+    public static User1=new UserModel();
 
-    public static User2: UserModel={
-        UserId : 2,
-        FirstName : "FName2",
-        LastName : "LName2",
-        EmployeeId : 2,
-        //Task:null
-    };
+    public static User2=new UserModel();
+
+    static init() {
+        PMApiServiceMockData.User1
+        .WithValue(x=>x.UserId=-1)
+        .WithValue(x=>x.FirstName="FName1")
+        .WithValue(x=>x.LastName="LName1")
+        .WithValue(x=>x.EmployeeId=1);
+
+        PMApiServiceMockData.User2
+        .WithValue(x=>x.UserId=2)
+        .WithValue(x=>x.FirstName="FName2")
+        .WithValue(x=>x.LastName="LName2")
+        .WithValue(x=>x.EmployeeId=2);
+
+        //this.User1.
+    }
+        
+    // ={
+    //     UserId : 1,
+    //     FirstName : "FName1",
+    //     LastName : "LName1",
+    //     EmployeeId : 1,
+    //     //Task:null
+    // };
+
+    // public static User2: UserModel={
+    //     UserId : 2,
+    //     FirstName : "FName2",
+    //     LastName : "LName2",
+    //     EmployeeId : 2,
+    //     //Task:null
+    // };
 
     public static Users: UserModel[] = [
         PMApiServiceMockData.User1, PMApiServiceMockData.User2
     ];
     
-    private static Project1: ProjectModel={
+        private static Project1: ProjectModel={
         ProjectId : 1,
         Project : "Project1",
         StartDate : new Date(2018, 9, 1),

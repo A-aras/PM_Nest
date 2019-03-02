@@ -1,7 +1,14 @@
 import { TaskModel } from "./task-model";
+import { ModelBase } from "./model.base";
 
 
-export interface UserModel {
+
+export class UserModel extends ModelBase {
+
+    
+    // Indentifier(): string {
+    //     return this.UserId.toString();
+    // }
     UserId: number;
     FirstName     : string;
     LastName: string ;
@@ -9,4 +16,12 @@ export interface UserModel {
     //ProjectId: number|null;
     //TaskId     : number|null;
     //Task     : TaskModel |null;
+    /**
+     *
+     */
+    constructor() {
+        super();
+        this.Indentifier = () => this.UserId.toString();
+    }
+    
 }

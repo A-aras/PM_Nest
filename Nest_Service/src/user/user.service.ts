@@ -45,6 +45,12 @@ export class UserService {
         //return ServiceMockData.Users;
     }
 
+    GetUserById(userId:number|null): Promise<UserModel[]> {
+        return this.repo.find({relations:["Projects"],where:{UserId:Equal(userId)}}).then(x => {
+            return x;
+        });
+    }
+
     AddUser(user: UserModel): Promise<UserModel> {
        
         return this.repo.save(user).then(x=>{

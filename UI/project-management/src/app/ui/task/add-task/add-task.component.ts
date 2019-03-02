@@ -79,12 +79,13 @@ export class AddTaskComponent implements OnInit {
   DialogResult: Subject<boolean> = new Subject<boolean>();
 
   getDefaultUserModel(): UserModel {
-    let defaultUser: UserModel = {
-      EmployeeId: -1,
-      FirstName: "",
-      LastName: "",
-      UserId: -1
-    };
+    let defaultUser = new UserModel();
+    defaultUser
+    .WithValue(x=>x.EmployeeId=-1)
+    .WithValue(x=>x.FirstName="")
+    .WithValue(x=>x.LastName="")
+    .WithValue(x=>x.UserId=-1);
+    
     return defaultUser;
   }
   selectedUser: UserModel = this.getDefaultUserModel();

@@ -11,6 +11,7 @@ import { TaskModel } from '../model/task-model';
 import { ProjectModel } from '../model/project-model';
 import { UserModel } from '../model/user-model';
 import { IPmApiService } from './pm-api.service-interface';
+import { map, mapTo } from 'rxjs/operators';
 
 @Injectable()
 export class PmApiService extends IPmApiService {
@@ -64,9 +65,34 @@ export class PmApiService extends IPmApiService {
         super();
       }
 
-    getUsers(): Observable<UserModel[]> {
-        return this.httpService.get<UserModel[]>(environment.ApiService+ "/User");
+      getUsersById(id:number): Observable<UserModel[]> {
+        return this.httpService.get<UserModel[]>(environment.ApiService+ "/User/GetUserById/"+id).pipe(map((usersdto)=>{
+            usersdto.map((userdto,index,usrs)=>{
+                let userModel=new UserModel()
+                .WithValue(x=>x.EmployeeId=userdto.EmployeeId)
+                .WithValue(x=>x.FirstName=userdto.FirstName)
+                .WithValue(x=>x.LastName=userdto.LastName)
+                .WithValue(x=>x.UserId=userdto.UserId);
+                usrs[index]=userModel;
+            });
+            return usersdto;
+        },null))
     }
+
+    getUsers(): Observable<UserModel[]> {
+        return this.httpService.get<UserModel[]>(environment.ApiService+ "/User").pipe(map((usersdto)=>{
+            usersdto.map((userdto,index,usrs)=>{
+                let userModel=new UserModel()
+                .WithValue(x=>x.EmployeeId=userdto.EmployeeId)
+                .WithValue(x=>x.FirstName=userdto.FirstName)
+                .WithValue(x=>x.LastName=userdto.LastName)
+                .WithValue(x=>x.UserId=userdto.UserId);
+                usrs[index]=userModel;
+            });
+            return usersdto;
+        },null))
+    }
+
     AddUser(user: UserModel) {
         return this.httpService.post(environment.ApiService+"/User/AddUser", user);
     }

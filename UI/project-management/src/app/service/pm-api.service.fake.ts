@@ -18,6 +18,10 @@ import { PMApiServiceMockData } from './pm-api.service.mock';
 
 @Injectable()
 export class PmApiServiceFake extends IPmApiService {
+    
+    getUsersById(id: number): Observable<UserModel[]> {
+        return of(PMApiServiceMockData.Users);
+    }
     getAllParentTasksForProject(project: ProjectModel): Observable<TaskModel[]> {
         throw new Error("Method not implemented.");
     }
